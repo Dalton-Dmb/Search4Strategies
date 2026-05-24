@@ -1,5 +1,5 @@
 ﻿from __future__ import annotations
-
+from app.execution.execution_profiles import get_execution_profile
 from dataclasses import dataclass
 from typing import Optional
 
@@ -120,8 +120,12 @@ def generate_signal(
             entry = float(fvg_entry)
             reason = "Rule met. Bearish FVG midpoint retracement entry generated."
 
+    profile = get_execution_profile(symbol)
+
     atr = float(row.get("atr", 0.0) or 0.0)
-    buffer = atr * risk_buffer_atr
+    atr_stop_mult = float(profile.get("atr_stop_mult", 1.0))
+
+    buffer = atr * atr_stop_mult
 
     if side == "long":
         swing_low = _recent_swing_low(df, idx, swing_lookback)
