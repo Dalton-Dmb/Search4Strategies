@@ -9,10 +9,21 @@ def add_fib_features(
 ) -> pd.DataFrame:
     out = df.copy()
 
-    recent_low = out["low"].rolling(lookback).min().shift(1)
-    recent_high = out["high"].rolling(lookback).max().shift(1)
+    out["high"] = pd.to_numeric(out["high"], errors="coerce")
+    out["low"] = pd.to_numeric(out["low"], errors="coerce")
 
-    leg_range = (recent_high - recent_low).replace(0, pd.NA)
+    recent_low = out["low"].rolling(
+        lookback,
+        min_periods=lookback,
+    ).min().shift(1)
+
+    recent_high = out["high"].rolling(
+        lookback,
+        min_periods=lookback,
+    ).max().shift(1)
+
+    leg_range = recent_high - recent_low
+    leg_range = leg_range.where(leg_range != 0)
 
     bullish_50 = recent_high - (leg_range * 0.500)
     bullish_618 = recent_high - (leg_range * 0.618)
@@ -34,28 +45,28 @@ def add_fib_features(
     out["fib_bear_705"] = bearish_705
 
     out["fib_bull_discount_50_618"] = (
-        (out["low"] <= bullish_50)
-        & (out["high"] >= bullish_618)
-    )
+        (out["low"].le(bullish_50))
+        & (out["high"].ge(bullish_618))
+    ).fillna(False)
 
     out["fib_bull_deep_618_705"] = (
-        (out["low"] <= bullish_618)
-        & (out["high"] >= bullish_705)
-    )
+        (out["low"].le(bullish_618))
+        & (out["high"].ge(bullish_705))
+    ).fillna(False)
 
     out["fib_bear_premium_50_618"] = (
-        (out["high"] >= bearish_50)
-        & (out["low"] <= bearish_618)
-    )
+        (out["high"].ge(bearish_50))
+        & (out["low"].le(bearish_618))
+    ).fillna(False)
 
     out["fib_bear_deep_618_705"] = (
-        (out["high"] >= bearish_618)
-        & (out["low"] <= bearish_705)
-    )
+        (out["high"].ge(bearish_618))
+        & (out["low"].le(bearish_705))
+    ).fillna(False)
 
     if "bull_fvg" in out.columns:
         out["fib_bull_fvg_confluence"] = (
-            out["bull_fvg"]
+            out["bull_fvg"].fillna(False).astype(bool)
             & (
                 out["fib_bull_discount_50_618"]
                 | out["fib_bull_deep_618_705"]
@@ -64,7 +75,7 @@ def add_fib_features(
 
     if "bear_fvg" in out.columns:
         out["fib_bear_fvg_confluence"] = (
-            out["bear_fvg"]
+            out["bear_fvg"].fillna(False).astype(bool)
             & (
                 out["fib_bear_premium_50_618"]
                 | out["fib_bear_deep_618_705"]

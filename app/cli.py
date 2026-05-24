@@ -1,38 +1,31 @@
 ﻿from __future__ import annotations
-from app.execution.paper_replay import replay_recent_signals, summarize_replay
+
 import argparse
 import json
 import logging
 
-from app.features.mtf import merge_mtf_bias
 import pandas as pd
-from app.features.fib import add_fib_features
-from app.execution.signal_scanner import scan_recent_signals
-from app.execution.signal_engine import generate_signal
-from app.features.ichimoku import add_ichimoku_features
-from app.features.rsi_divergence import add_rsi_divergence_features
-from app.features.displacement import add_displacement_features
+
 from app.config.settings import get_settings, load_yaml
-from app.utils.logging import configure_logging
 from app.data.mt5_client import MT5Client
 from app.data.storage import save_candles, load_candles
+from app.discovery.rule_miner import mine_boolean_rules
+from app.execution.paper_replay import replay_recent_signals, summarize_replay
+from app.execution.signal_engine import generate_signal
+from app.execution.signal_scanner import scan_recent_signals
 from app.features.candles import add_candle_features
+from app.features.displacement import add_displacement_features
+from app.features.fib import add_fib_features
+from app.features.ichimoku import add_ichimoku_features
+from app.features.mtf import merge_mtf_bias
+from app.features.rsi_divergence import add_rsi_divergence_features
 from app.features.structure import add_structure_features
 from app.labelling.triple_barrier import label_trades
-from app.discovery.rule_miner import mine_boolean_rules
 from app.models.train import train_classifier
-from app.validation.walk_forward import summarize_labels
-from app.validation.rule_validator import walk_forward_rule_validation
-from app.validation.monte_carlo import (
-    extract_rule_outcomes,
-    monte_carlo_simulation,
-    summarize_monte_carlo,
-)
+from app.reports.portfolio_ranker import rank_portfolio_reports
 from app.reports.reporting import write_discovery_report
 from app.strategy.exporter import export_strategy
-
-log = logging.getLogger(__name__)
-
+from app.utils.logging import configure_logging
 from app.validation.monte_carlo import (
     extract_rule_outcomes,
     monte_carlo_simulation,
@@ -40,35 +33,13 @@ from app.validation.monte_carlo import (
     summarize_monte_carlo,
     summarize_risk_adjusted,
 )
+from app.validation.rule_validator import walk_forward_rule_validation
+from app.validation.walk_forward import summarize_labels
+
+log = logging.getLogger(__name__)
 
 
-def build_features(df, h4_df=None, d1_df=None):
-    feat = add_candle_features(df)
-    feat = add_structure_features(feat)
-    feat = add_ichimoku_features(feat)
-    feat = add_rsi_divergence_features(feat)
-    feat = add_displacement_features(feat)
-
-    if h4_df is not None or d1_df is not None:
-        feat = merge_mtf_bias(feat, h4_df=h4_df, d1_df=d1_df)
-
-    return feat
-
-
-
-def build_labels(feat, side: str, target_r: float, horizon: int):
-    if side == "long":
-        return label_trades(feat, side=1, target_r=target_r, horizon=horizon)
-
-    if side == "short":
-        return label_trades(feat, side=-1, target_r=target_r, horizon=horizon)
-
-    labels_long = label_trades(feat, side=1, target_r=target_r, horizon=horizon)
-    labels_short = label_trades(feat, side=-1, target_r=target_r, horizon=horizon)
-
-    return pd.concat([labels_long, labels_short], ignore_index=True)
-
-def build_features(df, h4_df=None, d1_df=None):
+def build_features(df: pd.DataFrame, h4_df: pd.DataFrame | None = None, d1_df: pd.DataFrame | None = None) -> pd.DataFrame:
     feat = add_candle_features(df)
     feat = add_structure_features(feat)
     feat = add_fib_features(feat)
@@ -80,6 +51,39 @@ def build_features(df, h4_df=None, d1_df=None):
         feat = merge_mtf_bias(feat, h4_df=h4_df, d1_df=d1_df)
 
     return feat
+
+
+def build_labels(feat: pd.DataFrame, side: str, target_r: float, horizon: int) -> pd.DataFrame:
+    if side == "long":
+        return label_trades(feat, side=1, target_r=target_r, horizon=horizon)
+
+    if side == "short":
+        return label_trades(feat, side=-1, target_r=target_r, horizon=horizon)
+
+    labels_long = label_trades(feat, side=1, target_r=target_r, horizon=horizon)
+    labels_short = label_trades(feat, side=-1, target_r=target_r, horizon=horizon)
+
+    return pd.concat([labels_long, labels_short], ignore_index=True)
+
+
+def load_optional_htf(data_dir, symbol: str, use_h4: bool = False, use_d1: bool = False):
+    h4_df = None
+    d1_df = None
+
+    if use_h4:
+        try:
+            h4_df = load_candles(data_dir, symbol, "H4")
+        except Exception as exc:
+            log.warning("Could not load H4 data for %s: %s", symbol, exc)
+
+    if use_d1:
+        try:
+            d1_df = load_candles(data_dir, symbol, "D1")
+        except Exception as exc:
+            log.warning("Could not load D1 data for %s: %s", symbol, exc)
+
+    return h4_df, d1_df
+
 
 def cmd_doctor(args):
     s = get_settings()
@@ -109,39 +113,16 @@ def cmd_discover(args):
     s = get_settings()
     load_yaml()
 
-    df = load_candles(
+    df = load_candles(s.data_dir, args.symbol, args.timeframe)
+
+    h4_df, d1_df = load_optional_htf(
         s.data_dir,
         args.symbol,
-        args.timeframe,
+        use_h4=args.use_htf,
+        use_d1=args.use_htf,
     )
 
-    h4_df = None
-    d1_df = None
-
-    if args.use_htf:
-        try:
-            h4_df = load_candles(
-                s.data_dir,
-                args.symbol,
-                "H4",
-            )
-        except Exception:
-            h4_df = None
-
-        try:
-            d1_df = load_candles(
-                s.data_dir,
-                args.symbol,
-                "D1",
-            )
-        except Exception:
-            d1_df = None
-
-    feat = build_features(
-        df,
-        h4_df=h4_df,
-        d1_df=d1_df,
-    )
+    feat = build_features(df, h4_df=h4_df, d1_df=d1_df)
 
     labels = build_labels(
         feat,
@@ -223,7 +204,7 @@ def cmd_validate(args):
         rule = approved[0]["rule"]
 
     df = load_candles(s.data_dir, args.symbol, args.timeframe)
-    feat = build_features(candles)
+    feat = build_features(df)
 
     labels = build_labels(
         feat,
@@ -263,6 +244,7 @@ def cmd_validate(args):
     else:
         print("No valid fold samples found.")
 
+
 def cmd_montecarlo(args):
     s = get_settings()
 
@@ -282,14 +264,12 @@ def cmd_montecarlo(args):
         rule = args.rule
     else:
         approved = strategy.get("approved_rules", [])
-
         if not approved:
             raise ValueError("No approved rules found in strategy JSON.")
-
         rule = approved[0]["rule"]
 
     df = load_candles(s.data_dir, args.symbol, args.timeframe)
-    feat = build_features(candles)
+    feat = build_features(df)
 
     labels = build_labels(
         feat,
@@ -348,16 +328,12 @@ def cmd_montecarlo(args):
     for k, v in risk_summary.items():
         print(f"{k}: {v:.4f}" if isinstance(v, float) else f"{k}: {v}")
 
+
 def cmd_signal(args):
     s = get_settings()
 
-    df = load_candles(
-        s.data_dir,
-        args.symbol,
-        args.timeframe,
-    )
-
-    feat = build_features(candles)
+    df = load_candles(s.data_dir, args.symbol, args.timeframe)
+    feat = build_features(df)
 
     signal = generate_signal(
         features=feat,
@@ -379,61 +355,12 @@ def cmd_signal(args):
     for field, value in signal.__dict__.items():
         print(f"{field}: {value}")
 
+
 def cmd_scan(args):
     s = get_settings()
 
-    df = load_candles(
-        s.data_dir,
-        args.symbol,
-        args.timeframe,
-    )
-
-def cmd_replay(args):
-    s = get_settings()
-
-    candles = load_candles(
-        s.data_dir,
-        args.symbol,
-        args.timeframe,
-    )
-
-    feat = build_features(candles)
-
-    results = replay_recent_signals(
-        candles=candles,
-        features=feat,
-        symbol=args.symbol,
-        timeframe=args.timeframe,
-        rule=args.rule,
-        side=args.side,
-        target_r=args.target_r,
-        lookback=args.lookback,
-        horizon=args.horizon,
-    )
-
-    if results.empty:
-        print("No replayable signals found.")
-        return
-
-    output_dir = s.reports_dir / f"{args.symbol}_{args.timeframe}_{args.target_r}R"
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    output_path = output_dir / "paper_replay.csv"
-    results.to_csv(output_path, index=False)
-
-    summary = summarize_replay(results)
-
-    print(f"Paper replay written to {output_path}")
-    print()
-
-    print("Replay summary:")
-    for k, v in summary.items():
-        print(f"{k}: {v:.4f}" if isinstance(v, float) else f"{k}: {v}")
-
-    print()
-    print(results.tail(20).to_string(index=False))
-
-    feat = build_features(candles)
+    df = load_candles(s.data_dir, args.symbol, args.timeframe)
+    feat = build_features(df)
 
     signals = scan_recent_signals(
         features=feat,
@@ -460,29 +387,107 @@ def cmd_replay(args):
     print()
     print(signals.tail(20).to_string(index=False))
 
+
+def replay_filename(args) -> str:
+    suffix = []
+
+    if args.require_h4_bull:
+        suffix.append("h4_bull")
+
+    if args.require_d1_bull:
+        suffix.append("d1_bull")
+
+    if args.require_rsi_bull:
+        suffix.append("rsi_bull")
+
+    name = "paper_replay"
+
+    if suffix:
+        name += "_" + "_".join(suffix)
+
+    return f"{name}.csv"
+
+
+def cmd_replay(args):
+    s = get_settings()
+
+    candles = load_candles(s.data_dir, args.symbol, args.timeframe)
+
+    h4_df, d1_df = load_optional_htf(
+        s.data_dir,
+        args.symbol,
+        use_h4=args.require_h4_bull,
+        use_d1=args.require_d1_bull,
+    )
+
+    feat = build_features(
+        candles,
+        h4_df=h4_df,
+        d1_df=d1_df,
+    )
+
+    results = replay_recent_signals(
+        candles=candles,
+        features=feat,
+        symbol=args.symbol,
+        timeframe=args.timeframe,
+        rule=args.rule,
+        side=args.side,
+        target_r=args.target_r,
+        lookback=args.lookback,
+        horizon=args.horizon,
+        require_h4_bull=args.require_h4_bull,
+        require_d1_bull=args.require_d1_bull,
+        require_rsi_bull=args.require_rsi_bull,
+    )
+
+    if results.empty:
+        print("No replayable signals found.")
+        return
+
+    output_dir = s.reports_dir / f"{args.symbol}_{args.timeframe}_{args.target_r}R"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    output_path = output_dir / replay_filename(args)
+    results.to_csv(output_path, index=False)
+
+    summary = summarize_replay(results)
+
+    print(f"Paper replay written to {output_path}")
+    print()
+
+    print("Replay summary:")
+    for k, v in summary.items():
+        print(f"{k}: {v:.4f}" if isinstance(v, float) else f"{k}: {v}")
+
+    print()
+    print(results.tail(20).to_string(index=False))
+
+
+def cmd_portfolio(args):
+    s = get_settings()
+
+    ranked = rank_portfolio_reports(s.reports_dir)
+
+    if ranked.empty:
+        print("No paper replay reports found.")
+        return
+
+    output_path = s.reports_dir / "portfolio_ranking.csv"
+    ranked.to_csv(output_path, index=False)
+
+    print(f"Portfolio ranking written to {output_path}")
+    print()
+    print(ranked.head(args.top).to_string(index=False))
+
+
 def main():
     settings = get_settings()
     configure_logging(settings.root)
 
     parser = argparse.ArgumentParser("Search4Strategies")
     sub = parser.add_subparsers(required=True)
-    
-    p = sub.add_parser("scan")
-    p.add_argument("--symbol", required=True)
-    p.add_argument("--timeframe", default="M30")
-    p.add_argument("--target-r", type=float, default=5.0)
-    p.add_argument("--side", choices=["long", "short"], required=True)
-    p.add_argument("--rule", required=True)
-    p.add_argument("--lookback", type=int, default=300)
-    
-    p.set_defaults(func=cmd_scan)
-    p = sub.add_parser("signal")
-    p.add_argument("--symbol", required=True)
-    p.add_argument("--timeframe", default="M30")
-    p.add_argument("--target-r", type=float, default=5.0)
-    p.add_argument("--side", choices=["long", "short"], required=True)
-    p.add_argument("--rule", required=True)
-    p.set_defaults(func=cmd_signal)
+
     p = sub.add_parser("doctor")
     p.set_defaults(func=cmd_doctor)
 
@@ -521,10 +526,26 @@ def main():
     p.add_argument("--side", choices=["long", "short", "both"], default="short")
     p.add_argument("--runs", type=int, default=1000)
     p.add_argument("--rule", default=None)
-    p.set_defaults(func=cmd_montecarlo)
-
     p.add_argument("--balance", type=float, default=10000.0)
     p.add_argument("--risk", type=float, default=0.005)
+    p.set_defaults(func=cmd_montecarlo)
+
+    p = sub.add_parser("signal")
+    p.add_argument("--symbol", required=True)
+    p.add_argument("--timeframe", default="M30")
+    p.add_argument("--target-r", type=float, default=5.0)
+    p.add_argument("--side", choices=["long", "short"], required=True)
+    p.add_argument("--rule", required=True)
+    p.set_defaults(func=cmd_signal)
+
+    p = sub.add_parser("scan")
+    p.add_argument("--symbol", required=True)
+    p.add_argument("--timeframe", default="M30")
+    p.add_argument("--target-r", type=float, default=5.0)
+    p.add_argument("--side", choices=["long", "short"], required=True)
+    p.add_argument("--rule", required=True)
+    p.add_argument("--lookback", type=int, default=300)
+    p.set_defaults(func=cmd_scan)
 
     p = sub.add_parser("replay")
     p.add_argument("--symbol", required=True)
@@ -534,11 +555,17 @@ def main():
     p.add_argument("--side", choices=["long", "short"], required=True)
     p.add_argument("--rule", required=True)
     p.add_argument("--lookback", type=int, default=1000)
+    p.add_argument("--require-h4-bull", action="store_true")
+    p.add_argument("--require-d1-bull", action="store_true")
+    p.add_argument("--require-rsi-bull", action="store_true")
     p.set_defaults(func=cmd_replay)
+
+    p = sub.add_parser("portfolio")
+    p.add_argument("--top", type=int, default=20)
+    p.set_defaults(func=cmd_portfolio)
 
     args = parser.parse_args()
     args.func(args)
-
 
 
 if __name__ == "__main__":
