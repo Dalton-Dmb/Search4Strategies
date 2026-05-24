@@ -1,0 +1,108 @@
+{
+  "metadata": {
+    "symbol": "EURUSD",
+    "timeframe": "M30",
+    "target_r": 3.0,
+    "horizon": 72,
+    "side": "short"
+  },
+  "approved_rules": [
+    {
+      "rule": "engulf_bear AND sweep_high",
+      "samples": 158,
+      "wins": 54,
+      "losses": 99,
+      "win_rate": 0.34177215189873417,
+      "expectancy_r": 0.3987341772151899,
+      "profit_factor": 1.6363636363636365
+    },
+    {
+      "rule": "engulf_bull AND bull_fvg AND london",
+      "samples": 276,
+      "wins": 83,
+      "losses": 190,
+      "win_rate": 0.3007246376811594,
+      "expectancy_r": 0.213768115942029,
+      "profit_factor": 1.3105263157894738
+    },
+    {
+      "rule": "large_body AND bull_fvg AND london",
+      "samples": 146,
+      "wins": 43,
+      "losses": 100,
+      "win_rate": 0.2945205479452055,
+      "expectancy_r": 0.19863013698630136,
+      "profit_factor": 1.29
+    },
+    {
+      "rule": "bull_fvg AND london",
+      "samples": 437,
+      "wins": 128,
+      "losses": 304,
+      "win_rate": 0.2929061784897025,
+      "expectancy_r": 0.18306636155606407,
+      "profit_factor": 1.263157894736842
+    },
+    {
+      "rule": "engulf_bull AND large_body AND london",
+      "samples": 565,
+      "wins": 159,
+      "losses": 399,
+      "win_rate": 0.2814159292035398,
+      "expectancy_r": 0.13805309734513274,
+      "profit_factor": 1.1954887218045114
+    },
+    {
+      "rule": "engulf_bear AND rejection_bear AND london",
+      "samples": 139,
+      "wins": 37,
+      "losses": 99,
+      "win_rate": 0.26618705035971224,
+      "expectancy_r": 0.08633093525179857,
+      "profit_factor": 1.121212121212121
+    },
+    {
+      "rule": "engulf_bull AND sweep_high AND bull_fvg",
+      "samples": 140,
+      "wins": 37,
+      "losses": 99,
+      "win_rate": 0.2642857142857143,
+      "expectancy_r": 0.08571428571428572,
+      "profit_factor": 1.121212121212121
+    },
+    {
+      "rule": "engulf_bull AND large_body AND sweep_high",
+      "samples": 112,
+      "wins": 28,
+      "losses": 75,
+      "win_rate": 0.25,
+      "expectancy_r": 0.08035714285714286,
+      "profit_factor": 1.12
+    },
+    {
+      "rule": "sweep_high",
+      "samples": 1150,
+      "wins": 294,
+      "losses": 798,
+      "win_rate": 0.25565217391304346,
+      "expectancy_r": 0.07304347826086957,
+      "profit_factor": 1.105263157894737
+    },
+    {
+      "rule": "engulf_bull AND london",
+      "samples": 1348,
+      "wins": 356,
+      "losses": 973,
+      "win_rate": 0.26409495548961426,
+      "expectancy_r": 0.07047477744807122,
+      "profit_factor": 1.0976361767728675
+    }
+  ],
+  "risk_controls": {
+    "min_rr": 3,
+    "preferred_rr": 10,
+    "max_daily_loss": 0.03,
+    "max_trades_per_day": 6,
+    "stop_after_consecutive_losses": 3
+  }
+}

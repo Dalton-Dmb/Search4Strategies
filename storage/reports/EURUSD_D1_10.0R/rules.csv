@@ -1,0 +1,50 @@
+rule,samples,wins,losses,win_rate,expectancy_r,profit_factor
+engulf_bear AND rejection_bear AND bear_fvg,10,1,8,0.1,0.2,1.25
+rejection_bear AND bear_fvg,28,1,20,0.03571428571428571,-0.35714285714285715,0.5
+engulf_bear AND rejection_bear,130,2,100,0.015384615384615385,-0.6153846153846154,0.2
+rejection_bear,300,3,223,0.01,-0.6433333333333333,0.13452914798206278
+bear_fvg,748,8,573,0.0106951871657754,-0.6590909090909091,0.13961605584642234
+engulf_bear AND large_body AND bear_fvg,96,1,75,0.010416666666666666,-0.6770833333333334,0.13333333333333333
+engulf_bear AND bear_fvg,366,3,283,0.00819672131147541,-0.6912568306010929,0.10600706713780919
+engulf_bull AND large_body,636,4,490,0.006289308176100629,-0.7075471698113207,0.08163265306122448
+large_body AND bear_fvg,136,1,107,0.007352941176470588,-0.7132352941176471,0.09345794392523364
+engulf_bear,1688,9,1297,0.00533175355450237,-0.715047393364929,0.06939090208172706
+engulf_bear AND large_body AND sweep_high,22,0,16,0.0,-0.7272727272727273,0.0
+large_body,1676,7,1290,0.004176610978520286,-0.7279236276849642,0.05426356589147287
+engulf_bear AND large_body,614,3,477,0.004885993485342019,-0.7280130293159609,0.06289308176100629
+sweep_low,366,2,287,0.00546448087431694,-0.7295081967213115,0.06968641114982578
+engulf_bull,1770,9,1382,0.005084745762711864,-0.7299435028248588,0.06512301013024602
+engulf_bear AND sweep_high,56,0,41,0.0,-0.7321428571428571,0.0
+sweep_low AND bear_fvg,116,1,95,0.008620689655172414,-0.7327586206896551,0.10526315789473684
+rejection_bear AND sweep_high,42,0,31,0.0,-0.7380952380952381,0.0
+rejection_bear AND sweep_low,12,0,9,0.0,-0.75,0.0
+engulf_bear AND rejection_bear AND sweep_low,12,0,9,0.0,-0.75,0.0
+large_body AND bull_fvg,152,0,115,0.0,-0.756578947368421,0.0
+engulf_bear AND sweep_low,146,0,111,0.0,-0.7602739726027398,0.0
+bull_fvg,712,2,567,0.0028089887640449437,-0.7682584269662921,0.03527336860670194
+sweep_high,282,0,217,0.0,-0.7695035460992907,0.0
+engulf_bull AND bull_fvg,328,1,263,0.003048780487804878,-0.7713414634146342,0.03802281368821293
+engulf_bull AND rejection_bull AND sweep_low,18,0,14,0.0,-0.7777777777777778,0.0
+engulf_bull AND large_body AND bull_fvg,98,0,77,0.0,-0.7857142857142857,0.0
+engulf_bear AND large_body AND sweep_low,42,0,33,0.0,-0.7857142857142857,0.0
+engulf_bull AND sweep_high,76,0,60,0.0,-0.7894736842105263,0.0
+large_body AND sweep_high,72,0,57,0.0,-0.7916666666666666,0.0
+rejection_bull,294,0,233,0.0,-0.7925170068027211,0.0
+rejection_bear AND bull_fvg,60,0,48,0.0,-0.8,0.0
+rejection_bull AND bear_fvg,50,0,40,0.0,-0.8,0.0
+rejection_bear AND sweep_high AND bull_fvg,10,0,8,0.0,-0.8,0.0
+large_body AND sweep_low,90,0,73,0.0,-0.8111111111111111,0.0
+engulf_bull AND rejection_bull,138,0,112,0.0,-0.8115942028985508,0.0
+engulf_bull AND sweep_low,64,0,52,0.0,-0.8125,0.0
+rejection_bull AND sweep_low,64,0,52,0.0,-0.8125,0.0
+engulf_bear AND rejection_bear AND sweep_high,18,0,15,0.0,-0.8333333333333334,0.0
+large_body AND sweep_low AND bear_fvg,12,0,10,0.0,-0.8333333333333334,0.0
+engulf_bear AND sweep_low AND bear_fvg,44,0,37,0.0,-0.8409090909090909,0.0
+sweep_high AND bull_fvg,96,0,81,0.0,-0.84375,0.0
+engulf_bull AND large_body AND sweep_low,26,0,22,0.0,-0.8461538461538461,0.0
+rejection_bull AND sweep_low AND bear_fvg,28,0,24,0.0,-0.8571428571428571,0.0
+engulf_bull AND sweep_high AND bull_fvg,30,0,26,0.0,-0.8666666666666667,0.0
+rejection_bull AND bull_fvg,16,0,14,0.0,-0.875,0.0
+engulf_bull AND rejection_bull AND bull_fvg,10,0,9,0.0,-0.9,0.0
+engulf_bull AND large_body AND sweep_high,22,0,21,0.0,-0.9545454545454546,0.0
+large_body AND sweep_high AND bull_fvg,8,0,8,0.0,-1.0,0.0

@@ -1,0 +1,35 @@
+{
+  "trades": 5878,
+  "wins": 34,
+  "losses": 4540,
+  "win_rate": 0.005784280367471929,
+  "expectancy_r": -0.7145287512759442,
+  "max_drawdown_r": -4200.0,
+  "model_report": {
+    "0": {
+      "precision": 0.9965811965811966,
+      "recall": 0.9948805460750854,
+      "f1-score": 0.9957301451750641,
+      "support": 1758.0
+    },
+    "1": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 6.0
+    },
+    "accuracy": 0.9914965986394558,
+    "macro avg": {
+      "precision": 0.4982905982905983,
+      "recall": 0.4974402730375427,
+      "f1-score": 0.49786507258753204,
+      "support": 1764.0
+    },
+    "weighted avg": {
+      "precision": 0.993191464620036,
+      "recall": 0.9914965986394558,
+      "f1-score": 0.9923433079465775,
+      "support": 1764.0
+    }
+  }
+}

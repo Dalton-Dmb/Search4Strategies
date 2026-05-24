@@ -1,0 +1,29 @@
+﻿project:
+  name: Search4Strategies
+  version: 1.0.0
+
+data:
+  symbols: ["EURUSD", "GBPUSD", "XAUUSD", "NAS100"]
+  timeframes: ["M5", "M15", "M30", "H1"]
+  default_bars: 10000
+
+labelling:
+  horizons: [24, 48, 96]
+  r_targets: [3, 5, 10]
+  atr_period: 14
+  atr_stop_mult: 1.5
+  swing_lookback: 10
+
+discovery:
+  min_samples: 40
+  min_expectancy_r: 0.25
+  min_profit_factor: 1.20
+  preferred_target_r: 10
+  fallback_target_r: 3
+
+risk:
+  risk_per_trade: 0.01
+  max_daily_loss: 0.03
+  max_trades_per_day: 6
+  stop_after_consecutive_losses: 3
+

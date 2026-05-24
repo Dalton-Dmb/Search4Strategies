@@ -1,0 +1,108 @@
+{
+  "metadata": {
+    "symbol": "EURUSD",
+    "timeframe": "D1",
+    "target_r": 10.0,
+    "horizon": 60,
+    "side": "both"
+  },
+  "approved_rules": [
+    {
+      "rule": "engulf_bear AND rejection_bear AND bear_fvg",
+      "samples": 10,
+      "wins": 1,
+      "losses": 8,
+      "win_rate": 0.1,
+      "expectancy_r": 0.2,
+      "profit_factor": 1.25
+    },
+    {
+      "rule": "rejection_bear AND bear_fvg",
+      "samples": 28,
+      "wins": 1,
+      "losses": 20,
+      "win_rate": 0.03571428571428571,
+      "expectancy_r": -0.35714285714285715,
+      "profit_factor": 0.5
+    },
+    {
+      "rule": "engulf_bear AND rejection_bear",
+      "samples": 130,
+      "wins": 2,
+      "losses": 100,
+      "win_rate": 0.015384615384615385,
+      "expectancy_r": -0.6153846153846154,
+      "profit_factor": 0.2
+    },
+    {
+      "rule": "rejection_bear",
+      "samples": 300,
+      "wins": 3,
+      "losses": 223,
+      "win_rate": 0.01,
+      "expectancy_r": -0.6433333333333333,
+      "profit_factor": 0.13452914798206278
+    },
+    {
+      "rule": "bear_fvg",
+      "samples": 748,
+      "wins": 8,
+      "losses": 573,
+      "win_rate": 0.0106951871657754,
+      "expectancy_r": -0.6590909090909091,
+      "profit_factor": 0.13961605584642234
+    },
+    {
+      "rule": "engulf_bear AND large_body AND bear_fvg",
+      "samples": 96,
+      "wins": 1,
+      "losses": 75,
+      "win_rate": 0.010416666666666666,
+      "expectancy_r": -0.6770833333333334,
+      "profit_factor": 0.13333333333333333
+    },
+    {
+      "rule": "engulf_bear AND bear_fvg",
+      "samples": 366,
+      "wins": 3,
+      "losses": 283,
+      "win_rate": 0.00819672131147541,
+      "expectancy_r": -0.6912568306010929,
+      "profit_factor": 0.10600706713780919
+    },
+    {
+      "rule": "engulf_bull AND large_body",
+      "samples": 636,
+      "wins": 4,
+      "losses": 490,
+      "win_rate": 0.006289308176100629,
+      "expectancy_r": -0.7075471698113207,
+      "profit_factor": 0.08163265306122448
+    },
+    {
+      "rule": "large_body AND bear_fvg",
+      "samples": 136,
+      "wins": 1,
+      "losses": 107,
+      "win_rate": 0.007352941176470588,
+      "expectancy_r": -0.7132352941176471,
+      "profit_factor": 0.09345794392523364
+    },
+    {
+      "rule": "engulf_bear",
+      "samples": 1688,
+      "wins": 9,
+      "losses": 1297,
+      "win_rate": 0.00533175355450237,
+      "expectancy_r": -0.715047393364929,
+      "profit_factor": 0.06939090208172706
+    }
+  ],
+  "risk_controls": {
+    "min_rr": 3,
+    "preferred_rr": 10,
+    "max_daily_loss": 0.03,
+    "max_trades_per_day": 6,
+    "stop_after_consecutive_losses": 3
+  }
+}

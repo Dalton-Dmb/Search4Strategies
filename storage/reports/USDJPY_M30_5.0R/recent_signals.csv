@@ -1,0 +1,8 @@
+symbol,timeframe,side,rule,entry,stop_loss,take_profit,risk_r,reward_r,candle_index,valid,reason
+USDJPY,M30,long,rejection_bull AND bull_fvg AND london,154.627,154.19473214285716,156.78833928571424,1.0,5.0,15988,True,Rule met. Bullish FVG midpoint retracement entry generated.
+USDJPY,M30,long,rejection_bull AND bull_fvg AND london,153.986,153.6571964285714,155.6300178571429,1.0,5.0,16135,True,Rule met. Bullish FVG midpoint retracement entry generated.
+USDJPY,M30,long,rejection_bull AND bull_fvg AND london,158.96300000000002,158.53221428571428,161.11692857142876,1.0,5.0,17723,True,Rule met. Bullish FVG midpoint retracement entry generated.
+USDJPY,M30,long,rejection_bull AND bull_fvg AND london,159.257,158.91983928571426,160.94280357142873,1.0,5.0,19108,True,Rule met. Bullish FVG midpoint retracement entry generated.
+USDJPY,M30,long,rejection_bull AND bull_fvg AND london,159.744,159.58533928571427,160.53730357142865,1.0,5.0,19160,True,Rule met. Bullish FVG midpoint retracement entry generated.
+USDJPY,M30,long,rejection_bull AND bull_fvg AND london,159.7865,159.581875,160.80962499999995,1.0,5.0,19165,True,Rule met. Bullish FVG midpoint retracement entry generated.
+USDJPY,M30,long,rejection_bull AND bull_fvg AND london,157.236,157.05851785714285,158.1234107142857,1.0,5.0,19351,True,Rule met. Bullish FVG midpoint retracement entry generated.

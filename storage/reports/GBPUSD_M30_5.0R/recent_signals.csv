@@ -1,0 +1,16 @@
+symbol,timeframe,side,rule,entry,stop_loss,take_profit,risk_r,reward_r,candle_index,valid,reason
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.37696,1.3759742857142858,1.3818885714285707,1.0,5.0,16047,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.36662,1.3658221428571429,1.3706092857142853,1.0,5.0,16232,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.35348,1.3523210714285716,1.359274642857142,1.0,5.0,16338,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.35201,1.3513564285714283,1.3552778571428579,1.0,5.0,16721,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.34691,1.3464328571428572,1.3492957142857143,1.0,5.0,17089,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.34046,1.3397657142857144,1.3439314285714277,1.0,5.0,17123,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.3299400000000001,1.329093392857143,1.3341730357142862,1.0,5.0,17367,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.32855,1.3277367857142857,1.332616071428571,1.0,5.0,17369,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.32581,1.3250003571428572,1.3298582142857134,1.0,5.0,17578,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.32621,1.3251653571428572,1.3314332142857146,1.0,5.0,17867,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.34144,1.3412362500000001,1.3424587499999991,1.0,5.0,18530,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.3538299999999999,1.3533523214285714,1.356218392857142,1.0,5.0,18729,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.34825,1.3477155357142858,1.3509223214285706,1.0,5.0,19116,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.33663,1.336158035714286,1.3389898214285703,1.0,5.0,19721,True,Rule conditions met. Signal generated.
+GBPUSD,M30,long,rejection_bear AND sweep_low,1.33154,1.3307441071428572,1.3355194642857138,1.0,5.0,19762,True,Rule conditions met. Signal generated.
