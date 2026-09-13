@@ -36,10 +36,22 @@ from .ml_training import (
 from .pipeline import AlphaIQEngine
 from .regime_intelligence import EnsemblePolicy, RegimeEnsembleClassifier, TransitionState
 from .replay import DeterministicReplay, ReplayStep
+from .strategy_portfolio import (
+    ArbitrationPolicy,
+    ConflictPolicy,
+    PortfolioDecision,
+    RankedStrategy,
+    SignalSide,
+    StrategyPortfolioEngine,
+    StrategyPortfolioRegistration,
+    StrategySignal,
+)
 
 __all__ = [
     "AlphaIQEngine",
+    "ArbitrationPolicy",
     "CalibrationArtifact",
+    "ConflictPolicy",
     "DataQualityPolicy",
     "DataQualityReport",
     "DatasetManifest",
@@ -62,7 +74,9 @@ __all__ = [
     "OrderIntent",
     "PointInTimeFeatureEngine",
     "PointInTimeLabelSpec",
+    "PortfolioDecision",
     "PromotionPolicy",
+    "RankedStrategy",
     "RegimeAssessment",
     "RegimeEnsembleClassifier",
     "RegimeLabel",
@@ -70,11 +84,15 @@ __all__ = [
     "ReproducibilityRecord",
     "RetrainingPolicy",
     "RiskDecision",
+    "SignalSide",
     "StrategyDecision",
+    "StrategyPortfolioEngine",
+    "StrategyPortfolioRegistration",
+    "StrategySignal",
     "TemporalFold",
     "TrainingRunManifest",
     "TransitionState",
     "WalkForwardPlan",
 ]
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
