@@ -1,204 +1,322 @@
-# AlphaIQ™ Market Regime — Codex Bootstrap Contract
+# AlphaIQ™ Market Regime — Production Engineering Contract
 
 ## Status
-Engineering bootstrap for the **AlphaIQ™ Market Regime Classification Engine**.
+Authoritative production-first engineering contract for the **AlphaIQ™ Market Regime Classification Engine**.
 
-This document is an implementation contract, not permission to redesign the trading system. The forthcoming AlphaIQ™ Specification Manual is authoritative. Where this bootstrap document and the later manual differ, the later manual prevails.
+This project is **not a prototype** and must not be implemented as disposable scaffolding. Every module introduced from the first commit must be designed as part of the intended production system. Development may be staged into reviewable increments, but stages are activation milestones inside one permanent architecture — never throwaway versions that are later rewritten from scratch.
 
-## Core rule for Codex
-**Do not invent trading logic.**
+The AlphaIQ™ Specification Manual is the controlling functional specification. Where this contract and the manual differ, the manual prevails.
 
-If a threshold, regime definition, strategy-selection rule, risk rule, model feature, news/event policy, execution rule, or broker-specific behavior is not explicitly defined in the specification, expose it as configuration or a typed interface and mark it `TBD_SPEC`. Do not silently choose a value.
+## Prime engineering rule
+**Build the target system now. Activate it progressively. Do not prototype the architecture.**
 
-## Immediate objective
-Create a production-grade architectural foundation inside the existing `Search4Strategies` codebase for a regime-aware trading system without changing or breaking the current discovery engine.
-
-The first milestone is **architecture + contracts + tests**, not live trading and not model optimization.
+Codex must not invent trading logic. Where an approved rule is not yet numerically defined, create the production configuration surface, typed contract, validation, audit trail and tests now, and mark the unresolved parameter `TBD_SPEC`. The absence of a final number is not permission to omit the subsystem.
 
 ## Product identity
-Use the product name exactly as:
+Use the human-facing product name exactly as:
 
 - **AlphaIQ™ Market Regime**
-- Full technical name when appropriate: **AlphaIQ™ Market Regime Classification Engine**
+- **AlphaIQ™ Market Regime Classification Engine**
 
-The `™` symbol belongs in human-facing documentation and UI text. Use ASCII-safe Python/package/module identifiers in source code, e.g. `alphaiq`.
+Use ASCII-safe source identifiers such as `alphaiq`.
 
-## Architectural intent
-The completed system is expected to evolve toward this pipeline:
+## Production target
+AlphaIQ™ is a regime-aware, multi-strategy, machine-learning-enabled trading platform with deterministic safety controls, full journaling, model governance, event awareness, backtesting/walk-forward validation, live execution adapters, and observability.
 
-`Market Data -> Feature Engineering -> Market Regime Classification -> Strategy Selection -> Signal Engines -> Risk Engine -> Execution -> Trade Management -> Journaling -> Performance Analytics -> ML Feedback`
+The permanent target pipeline is:
 
-A later external-factors layer may incorporate scheduled macroeconomic events, news, and historically abnormal market behavior. That layer must remain optional and decoupled from the deterministic core.
+`Market/Broker Data + Macro/News/Event Data -> Normalization -> Feature Store -> Regime Ensemble -> Strategy Portfolio -> Signal Engines -> Risk & Capital Allocation -> Execution -> Trade Management -> Journal/Event Store -> Analytics -> ML Training/Calibration/Drift -> Governance & Monitoring`
 
-## Milestone 0 — required implementation
+No major box in this pipeline is to be treated as a future architectural afterthought.
 
-Create a new package namespace that does not disturb current `app` behavior:
+## Required permanent package architecture
+Create or evolve toward the following production namespace without breaking existing Search4Strategies behavior:
 
 ```text
 alphaiq/
-  __init__.py
-  domain/
-    __init__.py
-    enums.py
-    models.py
-  regime/
-    __init__.py
-    base.py
-    rule_based.py
-  strategy/
-    __init__.py
-    registry.py
-    selector.py
-  risk/
-    __init__.py
-    policy.py
-  journal/
-    __init__.py
-    models.py
-    sink.py
-  config/
-    __init__.py
-    schema.py
+  domain/              # canonical typed domain contracts
+  config/              # validated hierarchical configuration
+  data/                # market/broker/event ingestion and normalization
+  features/            # feature computation, provenance, leakage controls
+  regime/              # deterministic + ML + ensemble regime classification
+  strategies/          # registry and production strategy engines/adapters
+  signals/             # canonical signal contracts and arbitration
+  portfolio/           # strategy allocation and portfolio constraints
+  risk/                # pre-trade, intraday, portfolio and kill-switch controls
+  execution/           # broker-neutral execution contracts/adapters
+  trade_management/    # stops, targets, trailing, partials, lifecycle state
+  journal/             # immutable structured decision/trade event records
+  analytics/           # KPIs, attribution, regime/strategy diagnostics
+  ml/                  # datasets, training, inference, calibration, registry, drift
+  events/               # macro calendar/news/anomaly interfaces and policies
+  backtest/             # event-driven simulation and realistic costs
+  validation/           # walk-forward, purged CV, robustness/stress testing
+  governance/           # approvals, model/version lineage, promotion gates
+  observability/        # logs, metrics, health, alerts
+  adapters/             # MT5 and other external integrations
 ```
 
-Add tests under `tests/alphaiq/`.
+The exact internal file split may differ if justified, but these production responsibilities must exist from inception as explicit modules/contracts.
 
-### 1. Typed domain model
-Implement typed, testable contracts for:
+## 1. Canonical domain model
+Implement production-grade typed contracts for at least:
 
-- `MarketSnapshot`
-- `FeatureVector`
-- `RegimeAssessment`
-- `StrategyCandidate`
-- `StrategyDecision`
-- `RiskDecision`
-- `TradeIntent`
-- `JournalEvent`
+- MarketSnapshot / Bar / Tick / SessionContext
+- FeatureVector and FeatureProvenance
+- EventContext / NewsEvent / MacroEvent
+- RegimeAssessment and RegimeDistribution
+- StrategyDefinition / StrategyCandidate / StrategyDecision
+- Signal / SignalEvidence / SignalConflict
+- PortfolioAllocation
+- RiskDecision / RiskVeto / RiskBudget
+- OrderIntent / ExecutionReport / PositionState
+- TradeIntent / TradeLifecycleEvent
+- JournalEvent / DecisionTrace
+- ModelArtifact / ModelVersion / InferenceResult / DriftReport
 
-Prefer Python dataclasses or Pydantic only if the existing dependency footprint makes that appropriate. Avoid adding heavy dependencies without necessity.
+All records must support timestamp, source/provenance, schema version and deterministic serialization where relevant.
 
-### 2. Regime abstraction
-Define a `RegimeClassifier` protocol/ABC with a deterministic method conceptually equivalent to:
+## 2. Regime engine — deterministic + ML from day one
+The regime subsystem must be architected immediately as an ensemble-capable production service, not a rule shell waiting for ML later.
+
+Required classifier contract:
 
 ```python
-classify(snapshot: MarketSnapshot, features: FeatureVector) -> RegimeAssessment
+classify(snapshot, features, event_context=None) -> RegimeAssessment
 ```
 
-`RegimeAssessment` must support:
+Provide production interfaces for:
 
-- a machine-readable regime label;
-- confidence/probability where available;
-- evidence/features supporting the decision;
-- classifier/version identifier;
-- timestamp/data provenance;
-- an explicit `UNKNOWN` / `UNCLASSIFIED` outcome.
+- deterministic/rule classifier;
+- supervised ML classifier;
+- unsupervised/latent-state classifier where later approved;
+- ensemble/fusion classifier;
+- confidence calibration;
+- abstention/UNKNOWN behavior;
+- regime transition/hysteresis handling;
+- model/version provenance.
 
-### 3. Regime labels
-Do **not** freeze the final AlphaIQ™ taxonomy yet. Provide an extensible enum/registry with only safe provisional categories required for plumbing, including at minimum:
+The ML interfaces, dataset contracts, model registry abstractions, training/inference separation and calibration hooks must be implemented now. Actual models may initially be untrained until approved data and labels are available, but ML is a first-class subsystem from the outset.
 
-- `UNKNOWN`
-- `TRENDING`
-- `RANGING`
-- `TRANSITIONAL`
-- `HIGH_VOLATILITY`
+No ML component may bypass deterministic risk controls.
 
-Mark these as provisional in documentation. Do not infer trading direction or strategy from these labels yet.
+## 3. Regime taxonomy
+Use the Specification Manual's approved taxonomy as it is finalized. Until every final label is codified, support extensible registry-based labels and a mandatory `UNKNOWN`/`UNCLASSIFIED` state.
 
-### 4. Rule-based classifier skeleton
-Implement a rule-based classifier shell that accepts externally supplied configuration/rules. It may validate inputs and return `UNKNOWN` when no approved rules are configured.
+Do not collapse direction, volatility and state transition into one crude enum if the manual defines a multidimensional regime representation. The architecture must support hierarchical or multi-axis regime state.
 
-**It must not embed arbitrary ADX, ATR, EMA, RSI, volatility, session, or structure thresholds.** Those will come from the AlphaIQ™ Specification Manual.
+## 4. Feature platform
+Build a production feature layer with:
 
-### 5. Strategy registry and selector
-Create a strategy registry that allows named strategy engines to declare:
+- explicit lookback windows;
+- timestamp and source provenance;
+- no-lookahead guarantees;
+- train/live parity;
+- missing-data policy;
+- normalization/scaling versioning;
+- session/timezone handling;
+- feature-set version identifiers;
+- deterministic reproducibility.
 
-- strategy ID/name;
-- compatible regime(s);
-- required features;
-- optional contraindications;
-- version;
-- enabled/disabled status.
+It must accommodate price/volume/volatility, structure, momentum, trend, mean-reversion, liquidity, session, cross-asset/intermarket and external-event features when approved.
 
-The selector must be deterministic and auditable. Until the approved regime-to-strategy matrix is supplied, it must return no executable strategy when the mapping is absent.
+## 5. Strategy portfolio
+Do not model the system as one strategy selected from a toy registry. Build a production strategy portfolio architecture capable of supporting the complete approved AlphaIQ™ strategy library, including trend, breakout, momentum, range/mean-reversion and other strategies identified in the manual.
 
-### 6. Risk boundary
-Create a `RiskPolicy` interface. No live risk percentages, leverage, position sizing, stop placement, daily-loss limits, or trade-frequency rules are to be hard-coded at this milestone.
+Each strategy must declare:
 
-### 7. Journal-first design
-Every classification and selection decision must be capable of producing a structured journal event containing enough evidence to reconstruct **why** the system made or declined a decision.
+- strategy/version ID;
+- compatible and contraindicated regimes;
+- required features/data;
+- entry/exit contract;
+- risk assumptions;
+- session/instrument constraints;
+- cooldown/conflict behavior;
+- enablement and approval status.
 
-Journal records should be serializable and include schema versioning.
+The strategy selector/arbitrator must support multiple eligible strategies, ranking, conflicts, allocation and abstention. No mapping may be fabricated where the manual is silent.
 
-### 8. ML boundary
-Create interfaces that allow a future ML classifier to implement the same regime contract as the deterministic classifier.
+## 6. Risk and capital allocation
+Risk is a permanent independent control plane from day one.
 
-Do not train a model in Milestone 0.
-Do not add reinforcement learning.
-Do not let an ML component bypass deterministic risk controls.
+Build interfaces and production enforcement points for:
 
-### 9. Backward compatibility
-- Existing `Search4Strategies` commands must continue to run unchanged.
-- Existing tests must continue to pass.
-- New AlphaIQ™ modules must initially be additive.
+- per-trade risk;
+- instrument and portfolio exposure;
+- correlation/concentration limits;
+- leverage/margin safeguards;
+- daily/weekly drawdown limits;
+- consecutive-loss controls;
+- volatility/event risk throttling;
+- max concurrent positions;
+- liquidity/spread/slippage constraints;
+- kill switch / circuit breaker;
+- stale-data / broker-disconnect veto;
+- strategy and model risk budgets.
 
-## Engineering standards
+Unresolved numerical values remain validated configuration marked `TBD_SPEC`; the subsystem itself is not deferred.
 
-- Python type hints throughout public interfaces.
-- Clear docstrings on public classes/functions.
-- No broker credentials, secrets, tokens, or account identifiers in source.
-- Deterministic tests; no network calls in unit tests.
-- Avoid global mutable state.
-- Separate domain logic from MT5/broker adapters.
-- Prefer dependency inversion around external data/news/broker services.
-- No look-ahead bias in any future market-data transformation.
-- Any time-series feature API introduced now must make timestamp/provenance explicit.
+## 7. Execution and trade management
+Implement broker-neutral production contracts immediately for:
 
-## Required tests
-At minimum add tests proving:
+- market/limit/stop order intent;
+- idempotency/client order IDs;
+- acknowledgement, rejection and partial fills;
+- slippage and transaction-cost capture;
+- retry policy boundaries;
+- reconciliation with broker truth;
+- position state machine;
+- stop loss, target, trailing, breakeven and partial-close lifecycle;
+- emergency flatten/kill-switch behavior.
 
-1. A classifier can return `UNKNOWN` safely when rules are unavailable.
-2. `RegimeAssessment` preserves label, confidence/evidence, version, and provenance.
-3. Strategy selection refuses to manufacture a strategy where no approved mapping exists.
-4. Disabled strategies cannot be selected.
-5. Journal events serialize deterministically.
-6. Risk interface can veto a trade intent.
-7. Existing application imports/CLI remain unaffected.
+No live account execution should be enabled merely by building these interfaces. Live trading must require an explicit production configuration gate and later approval. Paper/simulation mode must use the same contracts.
 
-## Deliverables for the first PR
+## 8. Journaling as system of record
+Journaling is mandatory infrastructure, not an add-on.
 
-- New AlphaIQ™ package skeleton.
-- Domain contracts and provisional enums.
-- Rule-based classifier shell.
-- Strategy registry + safe selector.
-- Risk policy interface.
-- Journal schema/sink interface.
-- Unit tests.
-- `docs/ALPHAIQ_ARCHITECTURE.md` explaining module boundaries and extension points.
-- No live-order execution.
-- No arbitrary trading thresholds.
+Every material decision must be reconstructable:
 
-## Definition of done
-The milestone is complete only when:
+`data -> features -> regime -> strategy eligibility -> signal -> risk decision -> order -> fill -> management -> exit -> outcome`
 
-- all existing tests pass;
-- all new AlphaIQ™ tests pass;
-- current Search4Strategies behavior is not broken;
-- there are no hidden magic numbers defining trading behavior;
-- unspecified trading rules are explicitly identified as `TBD_SPEC` or configuration;
-- the architecture can accept both deterministic and ML regime classifiers behind the same contract;
-- every classification/strategy decision is designed to be journalable and auditable.
+Journal/event records must include schema version, component/model versions, configuration fingerprint, evidence, timestamps and correlation IDs. Design for immutable append-only storage with export to analytical stores.
 
-## Subsequent milestones (do not implement yet)
+## 9. ML platform and model governance
+Implement the production ML lifecycle architecture now:
 
-1. Final regime taxonomy and mathematical definitions.
-2. Market feature catalogue and provenance rules.
-3. Approved regime-to-strategy matrix, including genuine range/mean-reversion handling.
-4. Strategy engine adapters.
-5. Risk and capital-allocation engine.
-6. Backtest/walk-forward framework integration.
-7. ML regime classifier and calibration.
-8. News/event anomaly layer.
-9. Execution/broker adapters.
-10. Continuous journaling, analytics, drift monitoring, and model governance.
+- dataset definitions and snapshots;
+- leakage-safe label generation;
+- train/validation/test separation;
+- walk-forward and purged/embargoed validation hooks;
+- feature/model version lineage;
+- experiment metadata;
+- model registry abstraction;
+- calibration metrics;
+- inference service contract;
+- champion/challenger support;
+- drift detection;
+- rollback;
+- promotion approval gates;
+- shadow mode before production activation.
 
-Codex should stop at Milestone 0 unless a later AlphaIQ™ specification or issue explicitly authorizes more.
+Model training can proceed as soon as approved datasets/labels exist; it is not relegated to a later architectural rewrite.
+
+Avoid reinforcement learning unless the Specification Manual expressly authorizes it and defines the safety/evaluation framework.
+
+## 10. External news, macro and abnormal-event layer
+Treat events as a first-class data source now. Build decoupled interfaces for economic calendar, scheduled macro releases, news/event sentiment or classification, market-shock/anomaly detection and event-risk policies.
+
+The system must be capable of learning/encoding how historically abnormal conditions affect regime confidence, risk throttles and strategy eligibility, subject to the Specification Manual and data-quality requirements.
+
+External providers must sit behind adapters; domain logic must not depend directly on one vendor.
+
+## 11. Backtesting and validation
+The production engine and research engine must share the same domain logic wherever practicable to avoid research/live divergence.
+
+Provide architecture for:
+
+- event-driven simulation;
+- realistic spread, commission, slippage and latency assumptions;
+- walk-forward testing;
+- purged/embargoed time-series CV where ML applies;
+- Monte Carlo/bootstrapped robustness testing;
+- parameter stability;
+- regime-specific performance attribution;
+- strategy interaction/portfolio tests;
+- out-of-sample promotion gates;
+- reproducible run manifests.
+
+## 12. Observability and operations
+Build production seams for:
+
+- structured logs;
+- metrics;
+- health checks;
+- data freshness;
+- execution reconciliation;
+- model/regime confidence monitoring;
+- strategy/risk state;
+- alerts;
+- incident-safe shutdown and restart.
+
+No secrets, broker credentials or account identifiers may be committed to source.
+
+## 13. Configuration
+All behavior must be controlled through validated, versioned configuration with clear defaults only where the specification authorizes defaults.
+
+Production, paper, backtest and development environments must be separated. A configuration fingerprint must be included in journal/backtest records.
+
+## 14. Engineering quality gates
+From the first implementation:
+
+- typed public interfaces;
+- deterministic unit tests;
+- integration tests for subsystem boundaries;
+- no network access in unit tests;
+- dependency inversion for external services;
+- no global mutable trading state;
+- explicit state machines where lifecycle matters;
+- idempotency for execution-sensitive operations;
+- fail-closed behavior for stale/invalid/missing critical data;
+- backwards compatibility with existing Search4Strategies until an explicit migration is approved;
+- no hidden magic numbers;
+- no look-ahead bias;
+- no silent exception swallowing in trading/risk/execution paths.
+
+## 15. Production-first implementation sequence
+Codex may implement in small PRs, but each PR must land permanent architecture. Suggested sequence:
+
+1. Domain contracts, configuration, event/journal backbone, architecture tests.
+2. Data normalization + feature provenance layer.
+3. Deterministic regime engine + ML dataset/inference/model-registry contracts + ensemble shell.
+4. Full strategy registry/portfolio/selector contracts and approved strategy implementations.
+5. Independent risk/capital-allocation control plane.
+6. Execution + position/trade-management state machines in simulation/paper mode.
+7. Backtest/walk-forward/ML validation integration.
+8. Initial ML regime models, calibration and champion/challenger workflow.
+9. Macro/news/anomaly adapters and event-risk integration.
+10. Observability, operational hardening, reconciliation and guarded live-trading readiness.
+
+This sequence is **not** permission to postpone architecture. It is the order in which complete production modules become executable.
+
+## Immediate Codex task
+Begin implementing the permanent production architecture on branch `alphaiq-market-regime`.
+
+For the first PR, implement enough of every core subsystem's contract to make the system architecture concrete and testable, while fully implementing the domain/config/journal backbone and the first end-to-end dry-run path:
+
+`MarketSnapshot -> Features -> RegimeAssessment -> StrategyDecision -> RiskDecision -> OrderIntent -> simulated ExecutionReport -> Journal trace`
+
+The dry-run path must use production contracts and adapters, not disposable mocks as application architecture. Test doubles are acceptable only inside tests.
+
+Also implement ML production contracts in this first PR: dataset specification, model metadata/version, classifier protocol, inference result, registry interface, calibration interface and drift-report contract. If there is no approved trained model yet, inference must explicitly abstain rather than invent predictions.
+
+## First-PR acceptance criteria
+
+- Existing Search4Strategies behavior/tests remain intact.
+- Permanent `alphaiq` architecture exists for all target subsystems.
+- A deterministic end-to-end dry run traverses the canonical pipeline without placing a live order.
+- ML is represented as a real first-class production subsystem, not a `future/` placeholder.
+- Journal trace can reconstruct the full dry-run decision chain.
+- Risk can independently veto an otherwise valid strategy/signal.
+- Execution state is broker-neutral and idempotency-aware.
+- Unspecified trading thresholds are configuration/TBD_SPEC, never fabricated.
+- Unit + integration tests pass.
+- Architecture document identifies no planned throwaway subsystem.
+- Codex lists all unresolved specification dependencies explicitly.
+
+## Definition of done for the project
+AlphaIQ™ is not complete merely because code runs. Production readiness requires, at minimum:
+
+- approved regime taxonomy and strategy matrix implemented;
+- validated deterministic and ML regime components;
+- full approved strategy library;
+- tested portfolio/risk controls;
+- realistic costs and out-of-sample validation;
+- journal/audit completeness;
+- model governance/drift controls;
+- event/news risk integration where specified;
+- broker reconciliation and guarded execution;
+- observability/incident controls;
+- paper/shadow qualification before live activation;
+- explicit release/promotion checklist and rollback path.
+
+The architecture must reach these requirements by extension and configuration of the system started today — **not by replacing a prototype later**.
