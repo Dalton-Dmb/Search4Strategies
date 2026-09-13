@@ -12,6 +12,12 @@ from .domain import (
     RiskDecision,
     StrategyDecision,
 )
+from .event_intelligence import (
+    AbnormalityObservation,
+    EventContext,
+    EventContextBuilder,
+    EventWindowPolicy,
+)
 from .feature_platform import FeatureCatalog, FeatureSpec, PointInTimeFeatureEngine
 from .ml_governance import (
     DatasetManifest,
@@ -48,6 +54,7 @@ from .strategy_portfolio import (
 )
 
 __all__ = [
+    "AbnormalityObservation",
     "AlphaIQEngine",
     "ArbitrationPolicy",
     "CalibrationArtifact",
@@ -59,6 +66,9 @@ __all__ = [
     "DriftAssessment",
     "EnsemblePolicy",
     "EvaluationReport",
+    "EventContext",
+    "EventContextBuilder",
+    "EventWindowPolicy",
     "ExecutionReport",
     "FeatureCatalog",
     "FeatureSpec",
@@ -95,4 +105,4 @@ __all__ = [
     "WalkForwardPlan",
 ]
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
