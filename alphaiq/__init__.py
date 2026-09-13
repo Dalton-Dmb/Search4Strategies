@@ -14,6 +14,7 @@ from .domain import (
 )
 from .feature_platform import FeatureCatalog, FeatureSpec, PointInTimeFeatureEngine
 from .pipeline import AlphaIQEngine
+from .regime_intelligence import EnsemblePolicy, RegimeEnsembleClassifier, TransitionState
 from .replay import DeterministicReplay, ReplayStep
 
 __all__ = [
@@ -21,6 +22,7 @@ __all__ = [
     "DataQualityPolicy",
     "DataQualityReport",
     "DeterministicReplay",
+    "EnsemblePolicy",
     "ExecutionReport",
     "FeatureCatalog",
     "FeatureSpec",
@@ -31,10 +33,12 @@ __all__ = [
     "OrderIntent",
     "PointInTimeFeatureEngine",
     "RegimeAssessment",
+    "RegimeEnsembleClassifier",
     "RegimeLabel",
     "ReplayStep",
     "RiskDecision",
     "StrategyDecision",
+    "TransitionState",
 ]
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
