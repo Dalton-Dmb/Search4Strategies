@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
+import pytest
+
 from alphaiq.data_platform import DataQualityPolicy, InMemorySnapshotStore, validate_point_in_time
 from alphaiq.domain import MarketSnapshot
 from alphaiq.feature_platform import (
@@ -88,7 +90,7 @@ def test_point_in_time_feature_engine_builds_versioned_vector():
     assert result.valid is True
     assert result.vector is not None
     assert result.vector.feature_set_version == catalog.fingerprint()
-    assert result.vector.values["return_1"] == 0.01
+    assert result.vector.values["return_1"] == pytest.approx(0.01)
     assert "return_1" in result.vector.provenance
 
 
