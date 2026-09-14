@@ -152,7 +152,7 @@ def build_research_requests(
 ) -> tuple[HistoricalRequest, ...]:
     """Build deterministic Gold-priority/multi-asset requests from the universe."""
     requests = []
-    for symbol in universe.enabled_symbols_by_priority():
+    for symbol in universe.enabled_symbols():
         for timeframe in timeframes:
             requests.append(HistoricalRequest(symbol, timeframe, start_at, end_at))
     return tuple(requests)
