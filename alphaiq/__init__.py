@@ -19,6 +19,18 @@ from .event_intelligence import (
     EventWindowPolicy,
 )
 from .feature_platform import FeatureCatalog, FeatureSpec, PointInTimeFeatureEngine
+from .instrument_intelligence import (
+    EmpiricalCell,
+    EmpiricalMapPolicy,
+    EmpiricalObservation,
+    EngineInstrumentScore,
+    InstrumentSpec,
+    InstrumentUniverse,
+    RankingWeights,
+    build_empirical_map,
+    default_research_universe,
+    rank_engine_instruments,
+)
 from .ml_governance import (
     DatasetManifest,
     DriftAssessment,
@@ -64,6 +76,10 @@ __all__ = [
     "DatasetManifest",
     "DeterministicReplay",
     "DriftAssessment",
+    "EmpiricalCell",
+    "EmpiricalMapPolicy",
+    "EmpiricalObservation",
+    "EngineInstrumentScore",
     "EnsemblePolicy",
     "EvaluationReport",
     "EventContext",
@@ -78,6 +94,8 @@ __all__ = [
     "HyperparameterTrial",
     "InMemoryGovernedModelRegistry",
     "InMemorySnapshotStore",
+    "InstrumentSpec",
+    "InstrumentUniverse",
     "JournalEvent",
     "MarketSnapshot",
     "ModelStage",
@@ -87,6 +105,7 @@ __all__ = [
     "PortfolioDecision",
     "PromotionPolicy",
     "RankedStrategy",
+    "RankingWeights",
     "RegimeAssessment",
     "RegimeEnsembleClassifier",
     "RegimeLabel",
@@ -103,6 +122,9 @@ __all__ = [
     "TrainingRunManifest",
     "TransitionState",
     "WalkForwardPlan",
+    "build_empirical_map",
+    "default_research_universe",
+    "rank_engine_instruments",
 ]
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
