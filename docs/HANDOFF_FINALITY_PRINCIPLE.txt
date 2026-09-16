@@ -1,0 +1,1 @@
+FINALITY PRINCIPLE: AlphaIQ™ is complete only when its claimed capability is backed by reproducible evidence and operational gates appropriate to the requested mode. Missing evidence produces abstention/blocking, never an optimistic assumption.
