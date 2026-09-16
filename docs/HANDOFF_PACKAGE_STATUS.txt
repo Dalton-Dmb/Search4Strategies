@@ -1,0 +1,3 @@
+KPM-18 HANDOFF PACKAGE STATUS: READY FOR PULL REQUEST AND CI
+Branch: alphaiq-kpm18-developer-handoff
+Entry: docs/README_HANDOFF.md
