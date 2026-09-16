@@ -1,0 +1,6 @@
+AlphaIQ™ research universe intent
+Gold priority: XAUUSD, XAUGBP, XAUEUR, XAUJPY, configurable additional Gold crosses
+Metals: XAGUSD
+FX includes: USDJPY, USDCHF, EURCHF, EURUSD, GBPUSD, NZDUSD, AUDUSD, USDCAD, GBPJPY, EURJPY, EURGBP, GBPCHF, AUDJPY, CADJPY
+Hierarchy: D1/H4/H1 context; H1 thesis; M30/M15 refinement; M5 strategy-specific
+Universe remains configuration-driven and broker-neutral.
