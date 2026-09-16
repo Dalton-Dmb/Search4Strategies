@@ -1,0 +1,3 @@
+# AlphaIQ™ Handoff Reviewer Prompt
+
+Review the KPM-18 handoff as an engineering continuity package, not as a trading-performance certification. Verify it accurately distinguishes implemented capability from missing empirical evidence; preserves no-lookahead, certification, OOS isolation, independent risk and LIVE fail-closed invariants; identifies concrete remaining KPM/ALPHA work; provides enough dependency/order/acceptance detail for a successor; and contains no credentials or fabricated strategy/performance claims. Run CI/tests. Request changes for any language that could cause a successor to bypass an evidence/release gate or assume missing proprietary rules.
