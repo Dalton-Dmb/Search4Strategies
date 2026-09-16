@@ -1,0 +1,9 @@
+{
+  "name": "AlphaIQ™ Finality & Successor Developer Handoff",
+  "version": "1.0.0",
+  "date": "2026-09-16",
+  "baseline": "main after merged PR #47/KPM-14",
+  "entry": "docs/README_HANDOFF.md",
+  "successor_prompt": "docs/SUCCESSOR_PROMPT.md",
+  "live_authorisation": "blocked"
+}
