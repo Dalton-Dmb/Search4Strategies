@@ -1,0 +1,2 @@
+LIVE BOUNDARY
+AlphaIQ™ deployment, broker connectivity, credentials, green CI, historical results or audit preparation do not by themselves authorise real-money execution. LIVE must remain fail-closed until all applicable release gates pass and the owner explicitly authorises LIVE mode.
