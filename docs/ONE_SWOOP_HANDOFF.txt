@@ -1,0 +1,10 @@
+ALPHAIQ™ ONE-SWOOP HANDOFF
+
+Start: docs/README_HANDOFF.md
+Command: docs/SUCCESSOR_PROMPT.md
+Roadmap: docs/FINALITY_ROADMAP.md
+Acceptance: docs/HANDOFF_CHECKLIST.md
+Evidence: docs/FINALITY_EVIDENCE_INDEX_TEMPLATE.md
+Release: docs/RELEASE_CANDIDATE_MANIFEST_TEMPLATE.md
+
+PR #47 is complete for KPM-14. Finish the project beyond #47: exact strategy certification + genuine historical/OOS evidence → governed ML → risk/execution + KPM-15/16/17 → paper/shadow → independent audit → reproducible Contabo release. LIVE stays blocked without explicit approval.
