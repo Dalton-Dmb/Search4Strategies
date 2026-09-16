@@ -1,0 +1,26 @@
+project: AlphaIQ Market Regime
+trademark_display: "AlphaIQ™ Market Regime"
+handoff_version: "1.0.0"
+handoff_date: "2026-09-16"
+baseline: "main after merged PR #47"
+status:
+  pr47_kpm14_scope: complete
+  external_historical_empirical_run: pending
+  full_strategy_certification: pending
+  production_ml_promotion: pending
+  paper_shadow_validation: pending
+  independent_audit_evidence: pending
+  contabo_operational_packaging: pending
+  kpm16_patterns: pending
+  kpm17_drt_box: pending
+  risk_execution_final_reconciliation: pending
+  live_authorisation: blocked
+invariants:
+  no_lookahead: true
+  uncertified_strategy_evidence: blocked
+  oos_fold_isolation: required
+  risk_independent_veto: required
+  live_fail_closed: true
+  secrets_in_repo: forbidden
+successor_start: "docs/README_HANDOFF.md"
+successor_prompt: "docs/SUCCESSOR_PROMPT.md"
