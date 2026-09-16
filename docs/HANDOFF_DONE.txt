@@ -1,0 +1,3 @@
+AlphaIQ™ KPM-18 developer handoff documentation is complete for review on this branch.
+Authoritative entry: docs/README_HANDOFF.md
+Successor execution prompt: docs/SUCCESSOR_PROMPT.md
