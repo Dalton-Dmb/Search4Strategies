@@ -1,0 +1,2 @@
+NEXT DEVELOPER:
+Read docs/SUCCESSOR_PROMPT.md and execute docs/FINALITY_ROADMAP.md from current main. Do not redesign AlphaIQ™ or infer missing proprietary logic. Prioritise exact strategy certification + genuine historical point-in-time OOS evidence; complete Contabo packaging in parallel; keep LIVE fail-closed.
