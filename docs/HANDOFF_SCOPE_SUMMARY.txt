@@ -1,0 +1,8 @@
+KPM-18 SCOPE
+- confirm PR47/KPM14 completion boundary
+- preserve AlphaIQ™ architecture/product intent
+- enumerate actual remaining engineering/evidence/deployment work
+- define dependency order and finality gates
+- provide successor prompt/checklists/templates
+- preserve fail-closed/no-lookahead/certification/OOS/risk/live invariants
+- avoid fabricated strategy logic, empirical results, credentials or audit/live claims
