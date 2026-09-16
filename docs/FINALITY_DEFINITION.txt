@@ -1,0 +1,3 @@
+ALPHAIQ™ FINALITY
+
+A fresh, documented deployment can reproduce the approved data→features→regime→certified-strategy→risk→journal→evidence pipeline; OOS/shadow evidence and lineage are reproducible; operational restart/backup/rollback are tested; independent audit gates are satisfied; and deployment mode is explicitly approved. Missing evidence fails closed. LIVE is never inferred.
