@@ -1,0 +1,6 @@
+HANDOFF PACKAGE ASSEMBLED
+AlphaIQ™ Market Regime
+2026-09-16
+PR #47/KPM-14 scope: complete and merged
+Successor package: assembled on branch alphaiq-kpm18-developer-handoff
+Next action: CI/review/merge this handoff package, then successor continues project finality from current main.
