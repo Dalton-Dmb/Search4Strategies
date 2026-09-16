@@ -1,0 +1,3 @@
+# AlphaIQ™ Finality Command
+
+Continue from current main to a reproducible release candidate. Preserve all fail-safe contracts. Certify only exact approved strategy logic. Activate genuine point-in-time historical evidence and complete OOS analysis before production ML promotion. Finish risk/execution, KPM-15/16/17, paper/shadow validation and independent audit. Package and reproduce on Contabo. Keep LIVE blocked until every applicable gate passes and the owner explicitly authorises it. Solve ordinary engineering issues without waiting for repeated permission; escalate only concrete owner/external blockers.
