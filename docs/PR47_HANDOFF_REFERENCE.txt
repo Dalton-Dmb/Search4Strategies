@@ -1,0 +1,5 @@
+PR #47
+Title: KPM-14 — OOS instrument productivity and regime-mismatch intelligence
+State at handoff: merged
+Handoff interpretation: complete for stated analytical scope; not evidence that genuine external historical observations have already validated profitability.
+Successor continuation: docs/README_HANDOFF.md
