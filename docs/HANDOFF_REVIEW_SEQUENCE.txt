@@ -1,0 +1,8 @@
+KPM-18 REVIEW SEQUENCE
+1 run CI/tests
+2 review PROJECT_STATUS_AT_HANDOFF + PR47 completion/acceptance notes
+3 review DEVELOPER_HANDOFF_FINALITY + SUCCESSOR_PROMPT
+4 verify PROJECT_FINALITY_STATUS remains fail-closed
+5 verify no credentials/fabricated empirical claims
+6 merge handoff PR
+7 successor starts from updated main and executes FINALITY_ROADMAP
