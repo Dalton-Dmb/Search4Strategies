@@ -1,0 +1,1 @@
+LAST CHECK BEFORE PR: run CI; verify no false empirical/live claims; merge only if green.
