@@ -1,0 +1,2 @@
+KPM-18 acceptance target:
+A successor can understand PR47's completion boundary, current AlphaIQ™ architecture/status, unresolved evidence/deployment work, non-negotiable safety/reproducibility constraints, dependency order, external owner inputs, and final release criteria solely from repository documentation, and can begin implementation with a ready-to-use prompt/checklist. CI must pass before merge.
