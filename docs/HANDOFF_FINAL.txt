@@ -1,0 +1,1 @@
+AlphaIQ™ KPM-18 final handoff branch assembled; open PR, run CI, merge if green.
